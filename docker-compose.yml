@@ -1,41 +1,36 @@
 version: '3.8'
 
 services:
-  # Бот для логирования топиков
   topic-logger:
     build: .
-    container_name: topic_id_logging_bot
+    container_name: telegram-topic-logger
     restart: unless-stopped
-    command: python topic_id_logging_bot.py
     env_file:
       - .env
     volumes:
-      # Монтируем секреты (не копируем в образ)
+      - ./sessions:/app/sessions:rw
       - ./service-account-key.json:/app/service-account-key.json:ro
-      # Монтируем папки для сохранения данных
-      - ./sessions:/app/sessions
       - ./logs:/app/logs
     networks:
       - telegram-network
+    environment:
+      - PYTHONUNBUFFERED=1
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
 
-  # GEO Controller бот
   geo-controller:
     build: .
-    container_name: new_daily_ar
+    container_name: telegram-geo-controller
     restart: unless-stopped
     command: python new_daily_ar.py
     env_file:
       - .env
     volumes:
-      # Монтируем секреты
       - ./service-account-key.json:/app/service-account-key.json:ro
-      # Монтируем папки для сохранения данных
-      - ./sessions:/app/sessions
+      - ./sessions:/app/sessions:ro
       - ./logs:/app/logs
       - ./failed_exports:/app/failed_exports
     networks:
