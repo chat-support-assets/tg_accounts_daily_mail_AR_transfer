@@ -1,0 +1,38 @@
+# Secrets
+.env
+service-account-key.json
+*.key
+*.pem
+*.p12
+
+# Telegram sessions
+*.session
+sessions/
+*.session-journal
+
+# Logs
+*.log
+logs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Exports
+failed_exports/*.xlsx
