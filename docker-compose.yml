@@ -5,21 +5,15 @@ services:
     build: .
     container_name: telegram-topic-logger
     restart: unless-stopped
+    command: python topic_id_logging_bot.py
     env_file:
       - .env
     volumes:
-      - ./sessions:/app/sessions:rw
+      - ./sessions:/app/sessions
       - ./service-account-key.json:/app/service-account-key.json:ro
       - ./logs:/app/logs
     networks:
       - telegram-network
-    environment:
-      - PYTHONUNBUFFERED=1
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   geo-controller:
     build: .
@@ -30,18 +24,11 @@ services:
       - .env
     volumes:
       - ./service-account-key.json:/app/service-account-key.json:ro
-      - ./sessions:/app/sessions:ro
+      - ./sessions:/app/sessions
       - ./logs:/app/logs
       - ./failed_exports:/app/failed_exports
     networks:
       - telegram-network
-    depends_on:
-      - topic-logger
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
 networks:
   telegram-network:
