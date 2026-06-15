@@ -49,7 +49,6 @@ logging.basicConfig(
 # ============================================================
 API_ID = int(os.getenv('API_ID', 0))
 API_HASH = os.getenv('API_HASH', '')
-BOT_ID = int(os.getenv('BOT_ID', 0))
 LOG_CHAT_ID = int(os.getenv('LOG_CHAT_ID', 0))
 
 # Сессии храним в папке sessions
@@ -218,8 +217,7 @@ async def fetch_and_send_topics(client, chat_id, group_name):
 async def main():
     # Проверка обязательных переменных
     required_vars = [
-        ('API_ID', API_ID), ('API_HASH', API_HASH),
-        ('BOT_ID', BOT_ID), ('LOG_CHAT_ID', LOG_CHAT_ID)
+        ('API_ID', API_ID), ('API_HASH', API_HASH), ('LOG_CHAT_ID', LOG_CHAT_ID)
     ]
     
     missing = [name for name, value in required_vars if not value]
@@ -232,7 +230,6 @@ async def main():
     
     me = await client.get_me()
     logging.info(f"Logged in as {me.first_name} (@{me.username})")
-    logging.info(f"Watching for bot ID {BOT_ID} being added to chats...")
     
     logging.info("Running. Waiting for bot to be added to chats...")
     await client.run_until_disconnected()
