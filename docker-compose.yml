@@ -24,7 +24,6 @@ services:
       - .env
     volumes:
       - ./service-account-key.json:/app/service-account-key.json:ro
-      - ./sessions:/app/sessions
       - ./logs:/app/logs
       - ./failed_exports:/app/failed_exports
     networks:
