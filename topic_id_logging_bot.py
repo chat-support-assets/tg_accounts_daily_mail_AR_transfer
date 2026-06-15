@@ -40,7 +40,6 @@ logger = logging.getLogger(__name__)
 # ============================================================
 API_ID = int(os.getenv('API_ID', 0))
 API_HASH = os.getenv('API_HASH', '')
-TRACKED_BOT_ID = int(os.getenv('TRACKED_BOT_ID', 0))
 LOG_CHAT_ID = int(os.getenv('LOG_CHAT_ID', 0))
 
 SESSION_DIR = Path(__file__).parent / 'sessions'
@@ -232,8 +231,7 @@ async def send_alert(message: str):
 
 async def main():
     # Проверка конфигурации
-    required = [('API_ID', API_ID), ('API_HASH', API_HASH), 
-                ('TRACKED_BOT_ID', TRACKED_BOT_ID), ('LOG_CHAT_ID', LOG_CHAT_ID)]
+    required = [('API_ID', API_ID), ('API_HASH', API_HASH), ('LOG_CHAT_ID', LOG_CHAT_ID)]
     missing = [name for name, value in required if not value]
     if missing:
         raise RuntimeError(f"Missing env vars: {', '.join(missing)}")
@@ -252,24 +250,6 @@ async def main():
         
         me = await client.get_me()
         logger.info(f"✅ UserBot logged in as: {me.first_name} (@{me.username})")
-        logger.info(f"👀 Watching for bot ID: {TRACKED_BOT_ID}")
-        
-        # Обработчик добавления в чат
-        @client.on(events.ChatAction)
-        async def handler(event):
-            if not isinstance(event.chat, Channel) or not event.user_added:
-                return
-            
-            try:
-                added_user = await event.get_user()
-                if added_user and added_user.id == TRACKED_BOT_ID:
-                    logger.info(f"Bot added to: {event.chat.title} ({event.chat_id})")
-                    await asyncio.gather(
-                        fetch_and_send_topics(client, event.chat_id, event.chat.title),
-                        add_onboard_members(client, event.chat_id, event.chat.title),
-                    )
-            except Exception as e:
-                logger.error(f"Handler error: {e}")
         
         logger.info("🚀 UserBot is running...")
         await client.run_until_disconnected()
