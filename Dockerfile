@@ -15,3 +15,6 @@ COPY *.json .
 RUN mkdir -p /app/sessions /app/logs /app/failed_exports
 
 ENV PYTHONUNBUFFERED=1
+
+# Geo-controller теперь использует новую версию
+CMD ["python", "new_daily_ar.py"]
