@@ -234,27 +234,6 @@ async def main():
     logging.info(f"Logged in as {me.first_name} (@{me.username})")
     logging.info(f"Watching for bot ID {BOT_ID} being added to chats...")
     
-    @client.on(events.ChatAction)
-    async def handler(event):
-        if not isinstance(event.chat, Channel):
-            return
-        if not event.user_added:
-            return
-        
-        try:
-            added_user = await event.get_user()
-            if added_user and added_user.id == BOT_ID:
-                group_name = event.chat.title
-                chat_id = event.chat_id
-                logging.info(f"Bot was added to {group_name} ({chat_id})")
-                
-                await asyncio.gather(
-                    fetch_and_send_topics(client, chat_id, group_name),
-                    add_onboard_members(client, chat_id, group_name),
-                )
-        except Exception as e:
-            logging.error(f"Handler error: {e}")
-    
     logging.info("Running. Waiting for bot to be added to chats...")
     await client.run_until_disconnected()
 
